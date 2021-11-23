@@ -1,0 +1,933 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Визуализация данных в ggplot2</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="datasciencebox.org" />
+    <script src="libs/header-attrs/header-attrs.js"></script>
+    <link href="libs/font-awesome/css/all.css" rel="stylesheet" />
+    <link href="libs/font-awesome/css/v4-shims.css" rel="stylesheet" />
+    <link href="libs/panelset/panelset.css" rel="stylesheet" />
+    <script src="libs/panelset/panelset.js"></script>
+    <link rel="stylesheet" href="../xaringan-themer.css" type="text/css" />
+    <link rel="stylesheet" href="../slides.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# Визуализация данных в ggplot2
+## <br><br> Data Science in a Box
+### <a href="https://datasciencebox.org/">datasciencebox.org</a>
+
+---
+
+
+
+
+
+layout: true
+  
+&lt;div class="my-footer"&gt;
+&lt;span&gt;
+&lt;a href="https://datasciencebox.org" target="_blank"&gt;datasciencebox.org&lt;/a&gt;
+&lt;/span&gt;
+&lt;/div&gt; 
+
+---
+
+
+
+class: middle
+
+# ggplot2 ❤️ 🐧
+
+---
+
+## ggplot2 `\(\in\)` tidyverse
+
+.pull-left[
+&lt;img src="img/ggplot2-part-of-tidyverse.png" width="80%" style="display: block; margin: auto;" /&gt;
+] 
+.pull-right[ 
+- **ggplot2** - это пакет визуализации данных, входящий в tidyverse 
+- Структура кода для графика может быть представлена следующим образом
+
+
+```r
+ggplot(data = [dataset], 
+       mapping = aes(x = [x-variable], 
+                     y = [y-variable])) +
+   geom_xxx() +
+   other options
+```
+]
+
+---
+
+## Данные: Пингвины архипелага Палмер
+
+Данные о виде пингвина, острове в архипелаге Палмера, промерах (длина плавника, масса тела, измерения клюва), поле.
+
+.pull-left-narrow[
+&lt;img src="img/penguins.png" width="80%" style="display: block; margin: auto;" /&gt;
+]
+.pull-right-wide[
+
+```r
+library(palmerpenguins)
+glimpse(penguins)
+```
+
+```
+## Rows: 344
+## Columns: 8
+## $ species           &lt;fct&gt; Adelie, Adelie, Adelie, Adelie, Adeli~
+## $ island            &lt;fct&gt; Torgersen, Torgersen, Torgersen, Torg~
+## $ bill_length_mm    &lt;dbl&gt; 39.1, 39.5, 40.3, NA, 36.7, 39.3, 38.~
+## $ bill_depth_mm     &lt;dbl&gt; 18.7, 17.4, 18.0, NA, 19.3, 20.6, 17.~
+## $ flipper_length_mm &lt;int&gt; 181, 186, 195, NA, 193, 190, 181, 195~
+## $ body_mass_g       &lt;int&gt; 3750, 3800, 3250, NA, 3450, 3650, 362~
+## $ sex               &lt;fct&gt; male, female, female, NA, female, mal~
+## $ year              &lt;int&gt; 2007, 2007, 2007, 2007, 2007, 2007, 2~
+```
+]
+
+---
+
+.panelset[
+.panel[.panel-name[Plot]
+&lt;img src="u2-d02-ggplot2_files/figure-html/unnamed-chunk-6-1.png" width="70%" style="display: block; margin: auto;" /&gt;
+]
+.panel[.panel-name[Code]
+
+
+```r
+ggplot(data = penguins, 
+       mapping = aes(x = bill_depth_mm, y = bill_length_mm,
+                     colour = species)) +
+  geom_point() +
+  labs(title = "Bill depth and length",
+       subtitle = "Dimensions for Adelie, Chinstrap, and Gentoo Penguins",
+       x = "Bill depth (mm)", y = "Bill length (mm)",
+       colour = "Species")
+```
+
+```
+## Warning: Removed 2 rows containing missing values (geom_point).
+```
+]
+]
+
+---
+
+class: middle
+
+# Пишем код шаг за шагом
+
+---
+
+.midi[
+&gt; **Начинаем с фрейма `penguins` **
+]
+
+.pull-left[
+
+```r
+*ggplot(data = penguins)
+```
+]
+.pull-right[
+&lt;img src="u2-d02-ggplot2_files/figure-html/unnamed-chunk-7-1.png" width="100%" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+.midi[
+&gt; Начинаем с фрейма `penguins`,
+&gt; **устанавливаем соответствие между высотой клюва и осью `x`**
+]
+
+.pull-left[
+
+```r
+ggplot(data = penguins,
+*      mapping = aes(x = bill_depth_mm))
+```
+]
+.pull-right[
+&lt;img src="u2-d02-ggplot2_files/figure-html/unnamed-chunk-8-1.png" width="100%" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+.midi[
+&gt; Начинаем с фрейма `penguins`,
+&gt; устанавливаем соответствие между высотой клюва и осью `x`
+&gt; **и между длиной клюва и осью `y`.**
+]
+
+.pull-left[
+
+```r
+ggplot(data = penguins,
+       mapping = aes(x = bill_depth_mm,
+*                    y = bill_length_mm))
+```
+]
+.pull-right[
+&lt;img src="u2-d02-ggplot2_files/figure-html/unnamed-chunk-9-1.png" width="100%" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+.midi[
+&gt; Начинаем с фрейма `penguins`,
+&gt; устанавливаем соответствие между высотой клюва и осью `x`
+&gt; и между длиной клюва и осью `y`. 
+&gt; **Каждое наблюдение отображаем в виде точки**
+]
+
+.pull-left[
+
+```r
+ggplot(data = penguins,
+       mapping = aes(x = bill_depth_mm,
+                     y = bill_length_mm)) + 
+* geom_point()
+```
+]
+.pull-right[
+&lt;img src="u2-d02-ggplot2_files/figure-html/unnamed-chunk-10-1.png" width="100%" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+.midi[
+&gt; Начинаем с фрейма `penguins`,
+&gt; устанавливаем соответствие между высотой клюва и осью `x`
+&gt; и между длиной клюва и осью `y`. 
+&gt; Каждое наблюдение отображаем в виде точки
+&gt; **и устанавливаем соответствие между видом и цветом точки.**
+]
+
+.pull-left[
+
+```r
+ggplot(data = penguins,
+       mapping = aes(x = bill_depth_mm,
+                     y = bill_length_mm,
+*                    colour = species)) +
+  geom_point()
+```
+]
+.pull-right[
+&lt;img src="u2-d02-ggplot2_files/figure-html/unnamed-chunk-11-1.png" width="100%" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+.midi[
+&gt; Начинаем с фрейма `penguins`,
+&gt; устанавливаем соответствие между высотой клюва и осью `x`
+&gt; и между длиной клюва и осью `y`. 
+&gt; Каждое наблюдение отображаем в виде точки
+&gt; и устанавливаем соответствие между видом и цветом точки.
+&gt; **Называем график "Ширина и длина клюва"**
+]
+
+.pull-left[
+
+```r
+ggplot(data = penguins,
+       mapping = aes(x = bill_depth_mm,
+                     y = bill_length_mm,
+                     colour = species)) +
+  geom_point() +
+* labs(title = "Ширина и длина клюва")
+```
+]
+.pull-right[
+&lt;img src="u2-d02-ggplot2_files/figure-html/unnamed-chunk-12-1.png" width="100%" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+.midi[
+&gt; Начинаем с фрейма `penguins`,
+&gt; устанавливаем соответствие между высотой клюва и осью `x`
+&gt; и между длиной клюва и осью `y`. 
+&gt; Каждое наблюдение отображаем в виде точки
+&gt; и устанавливаем соответствие между видом и цветом точки.
+&gt; Называем график "Ширина и длина клюва", 
+&gt; **добавляем подзаголовок "Измерения пингвинов Адели, антарктического и субантарктического"**
+]
+
+.pull-left[
+
+```r
+ggplot(data = penguins,
+       mapping = aes(x = bill_depth_mm,
+                     y = bill_length_mm,
+                     colour = species)) +
+  geom_point() +
+  labs(title = "Ширина и длина клюва",
+*      subtitle = "Измерения пингвинов Адели, антарктического и субантарктического")
+```
+]
+.pull-right[
+&lt;img src="u2-d02-ggplot2_files/figure-html/unnamed-chunk-13-1.png" width="100%" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+.midi[
+&gt; Начинаем с фрейма `penguins`,
+&gt; устанавливаем соответствие между высотой клюва и осью `x`
+&gt; и между длиной клюва и осью `y`. 
+&gt; Каждое наблюдение отображаем в виде точки
+&gt; и устанавливаем соответствие между видом и цветом точки.
+&gt; Называем график "Ширина и длина клюва", 
+&gt; добавляем подзаголовок "Измерения пингвинов Адели, антарктического и субантарктического"
+&gt; **и подписи осей "Высота клюва (мм)" и "Длина клюва (мм)"**
+]
+
+.pull-left[
+
+```r
+ggplot(data = penguins,
+       mapping = aes(x = bill_depth_mm,
+                     y = bill_length_mm,
+                     colour = species)) +
+  geom_point() +
+  labs(title = "Высота и длина клюва",
+       subtitle = "Измерения пингвинов Адели, антарктического и субантарктического",
+*      x = "Высота клюва (мм)", y = "Длина клюва (мм)")
+```
+]
+.pull-right[
+&lt;img src="u2-d02-ggplot2_files/figure-html/unnamed-chunk-14-1.png" width="100%" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+.midi[
+&gt; Начинаем с фрейма `penguins`,
+&gt; устанавливаем соответствие между высотой клюва и осью `x`
+&gt; и между длиной клюва и осью `y`. 
+&gt; Каждое наблюдение отображаем в виде точки
+&gt; и устанавливаем соответствие между видом и цветом точки.
+&gt; Называем график "Ширина и длина клюва", 
+&gt; добавляем подзаголовок "Измерения пингвинов Адели, антарктического и субантарктического"
+&gt; и подписи осей "Высота клюва (мм)" и "Длина клюва (мм)",
+&gt; **а также название легенды "Виды"**
+]
+
+.pull-left[
+
+```r
+ggplot(data = penguins,
+       mapping = aes(x = bill_depth_mm,
+                     y = bill_length_mm,
+                     colour = species)) +
+  geom_point() +
+  labs(title = "Высота и длина клюва",
+       subtitle = "Измерения пингвинов Адели, антарктического и субантарктического",
+       x = "Высота клюва (мм)", y = "Длина клюва (мм)",
+*      colour = "Виды")
+```
+]
+.pull-right[
+&lt;img src="u2-d02-ggplot2_files/figure-html/unnamed-chunk-15-1.png" width="100%" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+.midi[
+&gt; Начинаем с фрейма `penguins`,
+&gt; устанавливаем соответствие между высотой клюва и осью `x`
+&gt; и между длиной клюва и осью `y`. 
+&gt; Каждое наблюдение отображаем в виде точки
+&gt; и устанавливаем соответствие между видом и цветом точки.
+&gt; Называем график "Ширина и длина клюва", 
+&gt; добавляем подзаголовок "Измерения пингвинов Адели, антарктического и субантарктического"
+&gt; и подписи осей "Высота клюва (мм)" и "Длина клюва (мм)",
+&gt; а также название легенды "Виды"
+&gt; **и подрисуночную подпись с источником данных.**
+]
+
+.pull-left[
+
+```r
+ggplot(data = penguins,
+       mapping = aes(x = bill_depth_mm,
+                     y = bill_length_mm,
+                     colour = species)) +
+  geom_point() +
+  labs(title = "Высота и длина клюва",
+       subtitle = "Измерения пингвинов Адели, антарктического и субантарктического",
+       x = "Высота клюва (мм)", y = "Длина клюва (мм)",
+       colour = "Виды",
+*      caption = "Источник: Palmer Station LTER / palmerpenguins package")
+```
+]
+.pull-right[
+&lt;img src="u2-d02-ggplot2_files/figure-html/unnamed-chunk-16-1.png" width="100%" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+.midi[
+&gt; Начинаем с фрейма `penguins`,
+&gt; устанавливаем соответствие между высотой клюва и осью `x`
+&gt; и между длиной клюва и осью `y`. 
+&gt; Каждое наблюдение отображаем в виде точки
+&gt; и устанавливаем соответствие между видом и цветом точки.
+&gt; Называем график "Ширина и длина клюва", 
+&gt; добавляем подзаголовок "Измерения пингвинов Адели, антарктического и субантарктического"
+&gt; и подписи осей "Высота клюва (мм)" и "Длина клюва (мм)",
+&gt; а также название легенды "Виды"
+&gt; и подрисуночную подпись с источником данных.
+&gt; **И, наконец, изменим цветовую схему на подходящую для людей с распространенной формой дальтонизма.**
+]
+
+.pull-left[
+
+```r
+ggplot(data = penguins,
+       mapping = aes(x = bill_depth_mm,
+                     y = bill_length_mm,
+                     colour = species)) +
+  geom_point() +
+  labs(title = "Высота и длина клюва",
+       subtitle = "Измерения пингвинов Адели, антарктического и субантарктического",
+       x = "Высота клюва (мм)", y = "Длина клюва (мм)",
+       colour = "Виды",
+       caption = "Источник: Palmer Station LTER / palmerpenguins package") +
+* scale_colour_viridis_d()
+```
+]
+.pull-right[
+&lt;img src="u2-d02-ggplot2_files/figure-html/unnamed-chunk-17-1.png" width="100%" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+.panelset[
+.panel[.panel-name[Plot]
+&lt;img src="u2-d02-ggplot2_files/figure-html/unnamed-chunk-18-1.png" width="70%" style="display: block; margin: auto;" /&gt;
+]
+.panel[.panel-name[Code]
+
+
+```r
+ggplot(data = penguins,
+       mapping = aes(x = bill_depth_mm,
+                     y = bill_length_mm,
+                     colour = species)) +
+  geom_point() +
+  labs(title = "Высота и длина клюва",
+       subtitle = "Измерения пингвинов Адели, антарктического и субантарктического",
+       x = "Высота клюва (мм)", y = "Длина клюва (мм)",
+       colour = "Виды",
+       caption = "Источник: Palmer Station LTER / palmerpenguins package") +
+  scale_colour_viridis_d()
+```
+
+```
+## Warning: Removed 2 rows containing missing values (geom_point).
+```
+]
+.panel[.panel-name[Narrative]
+.pull-left-wide[
+.midi[
+Начинаем с фрейма `penguins`,
+устанавливаем соответствие между высотой клюва и осью `x`
+и между длиной клюва и осью `y`. 
+
+Каждое наблюдение отображаем в виде точки
+и устанавливаем соответствие между видом и цветом точки.
+
+Называем график "Ширина и длина клюва", 
+добавляем подзаголовок "Измерения пингвинов Адели, антарктического и субантарктического"
+и подписи осей "Высота клюва (мм)" и "Длина клюва (мм)",
+а также название легенды "Виды"
+и подрисуночную подпись с источником данных.
+
+И, наконец, изменим цветовую схему на подходящую для людей с распространенной формой дальтонизма.
+]
+]
+]
+]
+
+---
+
+## Имена аргументов
+
+.tip[
+При построении графиков в `ggplot()` можно опустить имена первых двух аргументов.
+]
+
+.pull-left[
+
+```r
+ggplot(data = penguins,
+       mapping = aes(x = bill_depth_mm,
+                     y = bill_length_mm,
+                     colour = species)) +
+  geom_point() +
+  scale_colour_viridis_d()
+```
+]
+.pull-right[
+
+```r
+ggplot(penguins,
+       aes(x = bill_depth_mm,
+           y = bill_length_mm,
+           colour = species)) +
+  geom_point() +
+  scale_colour_viridis_d()
+```
+]
+
+---
+
+class: middle
+
+# Эстетики
+
+---
+
+## Варианты эстетик
+
+Часто используемые свойства символов, которые **могут быть поставлены в соответствие переменным** в данных:
+
+- `colour`
+- `shape`
+- `size`
+- `alpha` (прозрачность)
+
+---
+
+## Цвет
+
+.pull-left[
+
+```r
+ggplot(penguins,
+       aes(x = bill_depth_mm, 
+           y = bill_length_mm,
+*          colour = species)) +
+  geom_point() +
+  scale_colour_viridis_d()
+```
+]
+.pull-right[
+&lt;img src="u2-d02-ggplot2_files/figure-html/unnamed-chunk-19-1.png" width="100%" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+## Форма
+
+Поставлена в соответствие другой переменной по сравнению с `colour`
+
+.pull-left[
+
+```r
+ggplot(penguins,
+       aes(x = bill_depth_mm, 
+           y = bill_length_mm,
+           colour = species,
+*          shape = island)) +
+  geom_point() +
+  scale_colour_viridis_d()
+```
+]
+.pull-right[
+&lt;img src="u2-d02-ggplot2_files/figure-html/unnamed-chunk-20-1.png" width="100%" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+## Форма
+
+Поставлена в соответствие той же переменной, что и `colour`
+
+.pull-left[
+
+```r
+ggplot(penguins,
+       aes(x = bill_depth_mm, 
+           y = bill_length_mm,
+           colour = species,
+*          shape = species)) +
+  geom_point() +
+  scale_colour_viridis_d()
+```
+]
+.pull-right[
+&lt;img src="u2-d02-ggplot2_files/figure-html/unnamed-chunk-21-1.png" width="100%" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+## Размер
+
+.pull-left[
+
+```r
+ggplot(penguins,
+       aes(x = bill_depth_mm, 
+           y = bill_length_mm,
+           colour = species,
+           shape = species,
+*          size = body_mass_g)) +
+  geom_point() +
+  scale_colour_viridis_d()
+```
+]
+.pull-right[
+&lt;img src="u2-d02-ggplot2_files/figure-html/unnamed-chunk-22-1.png" width="100%" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+## Прозрачность
+
+.pull-left[
+
+```r
+ggplot(penguins,
+       aes(x = bill_depth_mm, 
+           y = bill_length_mm,
+           colour = species,
+           shape = species,
+           size = body_mass_g,
+*          alpha = flipper_length_mm)) +
+  geom_point() +
+  scale_colour_viridis_d()
+```
+]
+.pull-right[
+&lt;img src="u2-d02-ggplot2_files/figure-html/unnamed-chunk-23-1.png" width="100%" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+.pull-left[
+**Соответствие**
+
+
+```r
+ggplot(penguins,
+       aes(x = bill_depth_mm,
+           y = bill_length_mm,
+*          size = body_mass_g,
+*          alpha = flipper_length_mm)) +
+  geom_point()
+```
+
+&lt;img src="u2-d02-ggplot2_files/figure-html/unnamed-chunk-24-1.png" width="100%" style="display: block; margin: auto;" /&gt;
+]
+.pull-right[
+**Определение**
+
+
+```r
+ggplot(penguins,
+       aes(x = bill_depth_mm,
+           y = bill_length_mm)) + 
+* geom_point(size = 2, alpha = 0.5)
+```
+
+&lt;img src="u2-d02-ggplot2_files/figure-html/unnamed-chunk-25-1.png" width="100%" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+## Соответствие vs. определение
+
+- **Соответствие:** Устанавливает размер, прозрачность и пр. свойства точек на основе значений переменной в данных
+  - идет в `aes()`
+
+- **Определение:** Устанавливает размер, прозрачность и пр. свойства точек **не** на основе значений переменной в данных
+  - идет в `geom_*()` (в предыдущем примере это был `geom_point()`, но мы скоро познакомимся с другими тоже!)
+  
+---
+
+class: middle
+
+# Faceting
+
+---
+
+## Faceting
+
+- Меньшие по размеру графики, которые отражают подмножества данных
+- Полезны для рассмотрения условных отношений и большых объемов данных
+
+---
+
+.panelset[
+.panel[.panel-name[Plot]
+&lt;img src="u2-d02-ggplot2_files/figure-html/unnamed-chunk-26-1.png" width="70%" style="display: block; margin: auto;" /&gt;
+]
+.panel[.panel-name[Code]
+
+
+```r
+ggplot(penguins, aes(x = bill_depth_mm, y = bill_length_mm)) + 
+  geom_point() +
+* facet_grid(species ~ island)
+```
+
+```
+## Warning: Removed 2 rows containing missing values (geom_point).
+```
+]
+]
+
+---
+
+## Various ways to facet
+
+.question[
+На нескольких следующих слайдах опишите, что отображает каждый из графиков. Подумайте о то, как код связан с результатом.
+
+**На заметку:** Графики на следующих слайдах не имеют оформленных заголовком, подписей и пр., потому что мы хотим сосредоточить вас на том, что происходит с самими графиками.
+Но свои графики вы должны всегда оформлять!
+]
+
+---
+
+
+```r
+ggplot(penguins, aes(x = bill_depth_mm, y = bill_length_mm)) + 
+  geom_point() +
+* facet_grid(species ~ sex)
+```
+
+&lt;img src="u2-d02-ggplot2_files/figure-html/unnamed-chunk-27-1.png" width="60%" style="display: block; margin: auto;" /&gt;
+
+---
+
+
+```r
+ggplot(penguins, aes(x = bill_depth_mm, y = bill_length_mm)) + 
+  geom_point() +
+* facet_grid(sex ~ species)
+```
+
+&lt;img src="u2-d02-ggplot2_files/figure-html/unnamed-chunk-28-1.png" width="60%" style="display: block; margin: auto;" /&gt;
+
+---
+
+
+```r
+ggplot(penguins, aes(x = bill_depth_mm, y = bill_length_mm)) + 
+  geom_point() +
+* facet_wrap(~ species)
+```
+
+&lt;img src="u2-d02-ggplot2_files/figure-html/unnamed-chunk-29-1.png" width="60%" style="display: block; margin: auto;" /&gt;
+
+---
+
+
+```r
+ggplot(penguins, aes(x = bill_depth_mm, y = bill_length_mm)) + 
+  geom_point() +
+* facet_grid(. ~ species)
+```
+
+&lt;img src="u2-d02-ggplot2_files/figure-html/unnamed-chunk-30-1.png" width="60%" style="display: block; margin: auto;" /&gt;
+
+---
+
+
+```r
+ggplot(penguins, aes(x = bill_depth_mm, y = bill_length_mm)) + 
+  geom_point() +
+* facet_wrap(~ species, ncol = 2)
+```
+
+&lt;img src="u2-d02-ggplot2_files/figure-html/unnamed-chunk-31-1.png" width="60%" style="display: block; margin: auto;" /&gt;
+
+---
+
+## Faceting summary
+
+- `facet_grid()`:
+    - двумерная сетка
+    - `rows ~ cols`
+    - используйте `.` , если не нужно разделять
+- `facet_wrap()`: одномерная лента, разделенная на строки в соответствии с установленным числом строк или столбцов, либо по доступному месту
+
+---
+
+## Панели и цвет
+
+.pull-left-narrow[
+
+```r
+ggplot(
+  penguins, 
+  aes(x = bill_depth_mm, 
+      y = bill_length_mm, 
+*     color = species)) +
+  geom_point() +
+  facet_grid(species ~ sex) +
+* scale_color_viridis_d()
+```
+]
+.pull-right-wide[
+&lt;img src="u2-d02-ggplot2_files/figure-html/unnamed-chunk-32-1.png" width="100%" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+## Панели и цвет, без легенды
+
+.pull-left-narrow[
+
+```r
+ggplot(
+  penguins, 
+  aes(x = bill_depth_mm, 
+      y = bill_length_mm, 
+      color = species)) +
+  geom_point() +
+  facet_grid(species ~ sex) +
+  scale_color_viridis_d() +
+* guides(color = FALSE)
+```
+]
+.pull-right-wide[
+&lt;img src="u2-d02-ggplot2_files/figure-html/unnamed-chunk-33-1.png" width="100%" style="display: block; margin: auto;" /&gt;
+]
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"ratio": "16:9",
+"highlightLines": true,
+"highlightStyle": "solarized-light",
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
